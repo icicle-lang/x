@@ -1,0 +1,19 @@
+packages:
+          x-optparse/
+          x-bytestring/
+          x-eithert/
+          x-attoparsec/
+          x-exception/
+          x-conduit/
+          x-htoml/
+          x-vector/
+          x-templatehaskell/
+          x-show/
+          x-aeson/
+          x-file-embed/
+          lib/p/
+          lib/disorder/disorder-core/
+
+constraints:
+  cabal > 2
+
