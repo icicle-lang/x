@@ -1,6 +1,6 @@
 [submodule "lib/disorder"]
 	path = lib/disorder
-	url = git@github.com:HuwCampbell/disorder.hs
+	url = https://github.com/HuwCampbell/disorder.hs
 [submodule "lib/p"]
 	path = lib/p
-	url = git@github.com:HuwCampbell/p
+	url = https://github.com/icicle-lang/p.git

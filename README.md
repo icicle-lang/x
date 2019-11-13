@@ -1,8 +1,11 @@
-x
-=
+<div align="center">
 
-A collection of extra combinator libraries.
+# X
+### A collection of extra combinator libraries.
 
+[![Build Status](https://api.travis-ci.com/icicle-lang/x.svg?branch=master)](https://travis-ci.com/icicle-lang/x)
+
+</div>
 
 Convention for module names is `X.<Module.You.Are.Shadowing>`.
 
