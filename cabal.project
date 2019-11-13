@@ -5,14 +5,15 @@ packages:
           x-attoparsec/
           x-exception/
           x-conduit/
-          x-htoml/
           x-vector/
           x-templatehaskell/
           x-show/
           x-aeson/
           x-file-embed/
           lib/p/
+          lib/disorder/disorder-aeson/
           lib/disorder/disorder-core/
+          lib/disorder/disorder-jack/
 
 constraints:
   cabal > 2

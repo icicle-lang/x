@@ -10,7 +10,7 @@ language: c
 dist: xenial
 git:
   # whether to recursively clone submodules
-  submodules: true
+  submodules: false
 cache:
   directories:
     - $HOME/.cabal/packages
@@ -126,7 +126,7 @@ install:
     echo "packages: lib/disorder/disorder-core" >> cabal.project
   - |
     echo "constraints: cabal > 2" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-core|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   - if [ -f "x-optparse/configure.ac" ]; then (cd "x-optparse" && autoreconf -i); fi
@@ -141,6 +141,8 @@ install:
   - if [ -f "x-show/configure.ac" ]; then (cd "x-show" && autoreconf -i); fi
   - if [ -f "x-aeson/configure.ac" ]; then (cd "x-aeson" && autoreconf -i); fi
   - if [ -f "x-file-embed/configure.ac" ]; then (cd "x-file-embed" && autoreconf -i); fi
+  - if [ -f "lib/p/configure.ac" ]; then (cd "lib/p" && autoreconf -i); fi
+  - if [ -f "lib/disorder/disorder-core/configure.ac" ]; then (cd "lib/disorder/disorder-core" && autoreconf -i); fi
   - ${CABAL} v2-freeze $WITHCOMPILER ${TEST} ${BENCH} | color_cabal_output
   - "cat cabal.project.freeze | sed -E 's/^(constraints: *| *)//' | sed 's/any.//'"
   - rm  cabal.project.freeze
@@ -167,6 +169,8 @@ script:
   - PKGDIR_ambiata_x_show="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-show-[0-9.]*')"
   - PKGDIR_ambiata_x_aeson="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-aeson-[0-9.]*')"
   - PKGDIR_ambiata_x_file_embed="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-file-embed-[0-9.]*')"
+  - PKGDIR_ambiata_p="$(find . -maxdepth 1 -type d -regex '.*/ambiata-p-[0-9.]*')"
+  - PKGDIR_ambiata_disorder_core="$(find . -maxdepth 1 -type d -regex '.*/ambiata-disorder-core-[0-9.]*')"
   # Generate cabal.project
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
@@ -183,11 +187,11 @@ script:
     echo "packages: ${PKGDIR_ambiata_x_show}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_aeson}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_file_embed}" >> cabal.project
-    echo "packages: lib/p" >> cabal.project
-    echo "packages: lib/disorder/disorder-core" >> cabal.project
+    echo "packages: ${PKGDIR_ambiata_p}" >> cabal.project
+    echo "packages: ${PKGDIR_ambiata_disorder_core}" >> cabal.project
   - |
     echo "constraints: cabal > 2" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-core|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   # Building...
@@ -199,18 +203,20 @@ script:
   # Testing...
   - ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
   # cabal check...
-  # - (cd ${PKGDIR_ambiata_x_optparse} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_bytestring} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_eithert} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_attoparsec} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_exception} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_conduit} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_htoml} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_vector} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_templatehaskell} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_show} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_aeson} && ${CABAL} -vnormal check)
-  # - (cd ${PKGDIR_ambiata_x_file_embed} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_optparse} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_bytestring} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_eithert} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_attoparsec} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_exception} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_conduit} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_htoml} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_vector} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_templatehaskell} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_show} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_aeson} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_x_file_embed} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_p} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_ambiata_disorder_core} && ${CABAL} -vnormal check)
   # haddock...
   - ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all | color_cabal_output
   # Building without installed constraints for packages in global-db...
