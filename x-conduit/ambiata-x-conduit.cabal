@@ -10,6 +10,9 @@ cabal-version:         >= 1.8
 build-type:            Simple
 description:           x-conduit.
 
+extra-source-files:
+                       test/data/test.psv
+
 tested-with:
   GHC==8.0.2,
   GHC==8.2.2,

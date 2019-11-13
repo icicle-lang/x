@@ -10,6 +10,10 @@ cabal-version:         >= 1.8
 build-type:            Simple
 description:           x-file-embed.
 
+extra-source-files:
+                       test/example/foo.c
+                       test/example/foo.h
+
 tested-with:
   GHC==8.0.2,
   GHC==8.2.2,

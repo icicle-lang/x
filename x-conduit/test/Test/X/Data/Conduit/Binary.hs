@@ -55,7 +55,7 @@ prop_sepByByteBounded = forAll (arbitrary `suchThat` (elem nl)) $ \bs ->
       pure $ r1 === r2
   where
     nl = fromIntegral $ ord '\n'
-  
+
 
 prop_sepByByteBounded_lines :: Property
 prop_sepByByteBounded_lines =
