@@ -91,10 +91,10 @@ benchmark bench
   build-depends:       base
                      , ambiata-p
                      , ambiata-x-vector
-                     , containers                      == 0.5.*
+                     , containers
                      , criterion                       >= 1.1        && < 1.6
                      , deepseq                         >= 1.3        && < 1.5
-                     , transformers                    >= 0.4        && < 0.6
+                     , transformers
 
   other-modules:
                        Bench.MapMaybe
