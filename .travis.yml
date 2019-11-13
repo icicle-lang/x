@@ -116,17 +116,18 @@ install:
     echo "packages: x-attoparsec" >> cabal.project
     echo "packages: x-exception" >> cabal.project
     echo "packages: x-conduit" >> cabal.project
-    echo "packages: x-htoml" >> cabal.project
     echo "packages: x-vector" >> cabal.project
     echo "packages: x-templatehaskell" >> cabal.project
     echo "packages: x-show" >> cabal.project
     echo "packages: x-aeson" >> cabal.project
     echo "packages: x-file-embed" >> cabal.project
     echo "packages: lib/p" >> cabal.project
+    echo "packages: lib/disorder/disorder-aeson" >> cabal.project
     echo "packages: lib/disorder/disorder-core" >> cabal.project
+    echo "packages: lib/disorder/disorder-jack" >> cabal.project
   - |
     echo "constraints: cabal > 2" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-core|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-aeson|ambiata-disorder-core|ambiata-disorder-jack|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   - if [ -f "x-optparse/configure.ac" ]; then (cd "x-optparse" && autoreconf -i); fi
@@ -135,14 +136,15 @@ install:
   - if [ -f "x-attoparsec/configure.ac" ]; then (cd "x-attoparsec" && autoreconf -i); fi
   - if [ -f "x-exception/configure.ac" ]; then (cd "x-exception" && autoreconf -i); fi
   - if [ -f "x-conduit/configure.ac" ]; then (cd "x-conduit" && autoreconf -i); fi
-  - if [ -f "x-htoml/configure.ac" ]; then (cd "x-htoml" && autoreconf -i); fi
   - if [ -f "x-vector/configure.ac" ]; then (cd "x-vector" && autoreconf -i); fi
   - if [ -f "x-templatehaskell/configure.ac" ]; then (cd "x-templatehaskell" && autoreconf -i); fi
   - if [ -f "x-show/configure.ac" ]; then (cd "x-show" && autoreconf -i); fi
   - if [ -f "x-aeson/configure.ac" ]; then (cd "x-aeson" && autoreconf -i); fi
   - if [ -f "x-file-embed/configure.ac" ]; then (cd "x-file-embed" && autoreconf -i); fi
   - if [ -f "lib/p/configure.ac" ]; then (cd "lib/p" && autoreconf -i); fi
+  - if [ -f "lib/disorder/disorder-aeson/configure.ac" ]; then (cd "lib/disorder/disorder-aeson" && autoreconf -i); fi
   - if [ -f "lib/disorder/disorder-core/configure.ac" ]; then (cd "lib/disorder/disorder-core" && autoreconf -i); fi
+  - if [ -f "lib/disorder/disorder-jack/configure.ac" ]; then (cd "lib/disorder/disorder-jack" && autoreconf -i); fi
   - ${CABAL} v2-freeze $WITHCOMPILER ${TEST} ${BENCH} | color_cabal_output
   - "cat cabal.project.freeze | sed -E 's/^(constraints: *| *)//' | sed 's/any.//'"
   - rm  cabal.project.freeze
@@ -163,14 +165,15 @@ script:
   - PKGDIR_ambiata_x_attoparsec="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-attoparsec-[0-9.]*')"
   - PKGDIR_ambiata_x_exception="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-exception-[0-9.]*')"
   - PKGDIR_ambiata_x_conduit="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-conduit-[0-9.]*')"
-  - PKGDIR_ambiata_x_htoml="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-htoml-[0-9.]*')"
   - PKGDIR_ambiata_x_vector="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-vector-[0-9.]*')"
   - PKGDIR_ambiata_x_templatehaskell="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-templatehaskell-[0-9.]*')"
   - PKGDIR_ambiata_x_show="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-show-[0-9.]*')"
   - PKGDIR_ambiata_x_aeson="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-aeson-[0-9.]*')"
   - PKGDIR_ambiata_x_file_embed="$(find . -maxdepth 1 -type d -regex '.*/ambiata-x-file-embed-[0-9.]*')"
   - PKGDIR_ambiata_p="$(find . -maxdepth 1 -type d -regex '.*/ambiata-p-[0-9.]*')"
+  - PKGDIR_ambiata_disorder_aeson="$(find . -maxdepth 1 -type d -regex '.*/ambiata-disorder-aeson-[0-9.]*')"
   - PKGDIR_ambiata_disorder_core="$(find . -maxdepth 1 -type d -regex '.*/ambiata-disorder-core-[0-9.]*')"
+  - PKGDIR_ambiata_disorder_jack="$(find . -maxdepth 1 -type d -regex '.*/ambiata-disorder-jack-[0-9.]*')"
   # Generate cabal.project
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
@@ -181,17 +184,18 @@ script:
     echo "packages: ${PKGDIR_ambiata_x_attoparsec}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_exception}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_conduit}" >> cabal.project
-    echo "packages: ${PKGDIR_ambiata_x_htoml}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_vector}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_templatehaskell}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_show}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_aeson}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_x_file_embed}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_p}" >> cabal.project
+    echo "packages: ${PKGDIR_ambiata_disorder_aeson}" >> cabal.project
     echo "packages: ${PKGDIR_ambiata_disorder_core}" >> cabal.project
+    echo "packages: ${PKGDIR_ambiata_disorder_jack}" >> cabal.project
   - |
     echo "constraints: cabal > 2" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-core|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-htoml|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(ambiata-disorder-aeson|ambiata-disorder-core|ambiata-disorder-jack|ambiata-p|ambiata-x-aeson|ambiata-x-attoparsec|ambiata-x-bytestring|ambiata-x-conduit|ambiata-x-eithert|ambiata-x-exception|ambiata-x-file-embed|ambiata-x-optparse|ambiata-x-show|ambiata-x-templatehaskell|ambiata-x-vector)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   # Building...
@@ -203,20 +207,21 @@ script:
   # Testing...
   - ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
   # cabal check...
-  - (cd ${PKGDIR_ambiata_x_optparse} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_bytestring} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_eithert} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_attoparsec} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_exception} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_conduit} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_htoml} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_vector} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_templatehaskell} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_show} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_aeson} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_x_file_embed} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_p} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_ambiata_disorder_core} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_optparse} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_bytestring} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_eithert} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_attoparsec} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_exception} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_conduit} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_vector} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_templatehaskell} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_show} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_aeson} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_x_file_embed} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_p} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_disorder_aeson} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_disorder_core} && ${CABAL} -vnormal check)
+  # - (cd ${PKGDIR_ambiata_disorder_jack} && ${CABAL} -vnormal check)
   # haddock...
   - ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all | color_cabal_output
   # Building without installed constraints for packages in global-db...
