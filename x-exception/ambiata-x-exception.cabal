@@ -49,3 +49,5 @@ test-suite test
                      , text
                      , QuickCheck
                      , quickcheck-instances
+
+  other-modules:       Test.X.Control.Monad.Catch

@@ -53,3 +53,6 @@ test-suite test
                      , QuickCheck
                      , quickcheck-instances
                      , template-haskell
+
+  other-modules:       Test.X.Framework.Language.Haskell.TH
+                       Test.X.Language.Haskell.TH

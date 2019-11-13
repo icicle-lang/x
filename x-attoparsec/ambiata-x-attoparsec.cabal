@@ -56,3 +56,8 @@ test-suite test
                      , quickcheck-instances
                      , text
                      , ambiata-x-attoparsec
+
+  other-modules:
+                       Test.X.Data.Attoparsec.ByteString
+                       Test.X.Data.Attoparsec.Gen
+                       Test.X.Data.Attoparsec.Text

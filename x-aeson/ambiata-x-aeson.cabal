@@ -60,3 +60,6 @@ test-suite test
                      , quickcheck-instances
                      , text
                      , ambiata-x-aeson
+
+  other-modules:
+                       Test.X.Data.Aeson

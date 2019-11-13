@@ -55,3 +55,6 @@ test-suite test
                      , transformers
                      , QuickCheck
                      , quickcheck-instances
+
+  other-modules:       Test.X.Control.Monad.Trans.Either
+                       Test.X.Control.Monad.Trans.Either.Exit

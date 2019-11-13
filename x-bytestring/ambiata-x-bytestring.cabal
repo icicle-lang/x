@@ -55,3 +55,7 @@ test-suite test
                      , quickcheck-instances
                      , text
                      , vector
+
+  other-modules:
+                       Test.X.Data.ByteString.Char8
+                       Test.X.Data.ByteString.Unsafe

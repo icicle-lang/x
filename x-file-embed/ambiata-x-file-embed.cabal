@@ -55,3 +55,6 @@ test-suite test
                      , QuickCheck
                      , quickcheck-instances
                      , text
+
+  other-modules:
+                       Test.X.Data.FileEmbed

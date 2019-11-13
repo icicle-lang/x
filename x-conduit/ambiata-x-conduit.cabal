@@ -63,3 +63,6 @@ test-suite test
                      , resourcet
                      , temporary
                      , text
+
+  other-modules:       Test.X.Data.Conduit.Binary
+                       Test.X.Data.Conduit.Either

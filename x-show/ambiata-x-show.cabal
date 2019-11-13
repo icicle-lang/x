@@ -48,3 +48,6 @@ test-suite test
                      , ambiata-x-show
                      , QuickCheck
                      , quickcheck-instances
+
+  other-modules:
+                       Test.X.Text.Show

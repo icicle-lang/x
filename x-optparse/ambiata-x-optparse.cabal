@@ -57,3 +57,6 @@ test-suite test
                      , transformers-compat
                      , QuickCheck
                      , quickcheck-instances
+
+  other-modules:
+                       Test.X.Options.Applicative
