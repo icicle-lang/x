@@ -7,7 +7,9 @@ module X.Data.Vector (
   -- * Accessors
 
   -- ** Destructors
+#if !MIN_VERSION_vector(0,12,2)
   , uncons
+#endif
 
   -- * Elementwise operations
 
@@ -19,8 +21,10 @@ module X.Data.Vector (
   , mapAccumulate
 
   -- ** Monadic mapping
+#if !MIN_VERSION_vector(0,12,2)
   , mapMaybeM
   , imapMaybeM
+#endif
   , mapAccumulateM
 
   -- * Modifying vectors

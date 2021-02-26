@@ -8,7 +8,9 @@ module X.Data.Vector.Primitive (
   -- * Accessors
 
   -- ** Destructors
+#if !MIN_VERSION_vector(0,12,2)
   , uncons
+#endif
 
   -- * Elementwise operations
 
@@ -20,8 +22,10 @@ module X.Data.Vector.Primitive (
   , mapAccumulate
 
   -- ** Monadic mapping
+#if !MIN_VERSION_vector(0,12,2)
   , mapMaybeM
   , imapMaybeM
+#endif
   , mapAccumulateM
 
   -- * Modifying vectors
@@ -58,6 +62,7 @@ imapMaybe =
 {-# INLINE imapMaybe #-}
 #endif
 
+#if !MIN_VERSION_vector(0,12,2)
 mapMaybeM :: (Monad m, Prim a, Prim b) => (a -> m (Maybe b)) -> Vector a -> m (Vector b)
 mapMaybeM =
   Generic.mapMaybeM
@@ -67,6 +72,7 @@ imapMaybeM :: (Monad m, Prim a, Prim b) => (Int -> a -> m (Maybe b)) -> Vector a
 imapMaybeM =
   Generic.imapMaybeM
 {-# INLINE imapMaybeM #-}
+#endif
 
 mapAccumulate :: (Prim elt, Prim elt') => (acc -> elt -> (acc, elt')) -> acc -> Vector elt -> Vector elt'
 mapAccumulate =
@@ -83,7 +89,9 @@ merge =
   Generic.merge
 {-# INLINE merge #-}
 
+#if !MIN_VERSION_vector(0,12,2)
 uncons :: Prim a => Vector a -> Maybe (a, Vector a)
 uncons =
   Generic.uncons
 {-# INLINE uncons #-}
+#endif
