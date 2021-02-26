@@ -1,12 +1,13 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE CPP #-}
 module X.Data.Vector.Stream.Map
   ( mapAccumulateM
   , mapAccumulate
+#if !MIN_VERSION_vector(0,12,2)
   , mapMaybeM
+#endif
 #if !MIN_VERSION_vector(0,12,0)
   , mapMaybe
 #endif

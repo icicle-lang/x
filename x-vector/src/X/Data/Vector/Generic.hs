@@ -12,7 +12,9 @@ module X.Data.Vector.Generic (
   , lengths
 
   -- ** Destructors
+#if !MIN_VERSION_vector(0,12,2)
   , uncons
+#endif
 
   -- ** Extracting subvectors (slicing)
   , unsafeSplits
@@ -27,8 +29,10 @@ module X.Data.Vector.Generic (
   , mapAccumulate
 
   -- ** Monadic mapping
+#if !MIN_VERSION_vector(0,12,2)
   , mapMaybeM
   , imapMaybeM
+#endif
   , mapAccumulateM
 
   -- * Modifying vectors
@@ -44,7 +48,9 @@ module X.Data.Vector.Generic (
 
 import           Control.Monad.ST (ST)
 
+#if !MIN_VERSION_vector(0,12,2)
 import           Data.Vector.Fusion.Bundle.Size (toMax)
+#endif
 import qualified X.Data.Vector.Stream as Stream
 
 import           Data.Vector.Generic as Generic
@@ -134,15 +140,12 @@ transposeJagged xss max_cols =
             let
               !xs = xss `Generic.unsafeIndex` j
             in
-              case i < Generic.length xs of
-                False ->
-                  pure ()
-                True -> do
-                  let
-                    !x = xs `Generic.unsafeIndex` i
-                  !n <- MGeneric.unsafeRead ns i
-                  MGeneric.unsafeWrite ys0 (i * n_rows + n) x
-                  MGeneric.unsafeWrite ns i (n + 1)
+              when (i < Generic.length xs) $ do
+                let
+                  !x = xs `Generic.unsafeIndex` i
+                !n <- MGeneric.unsafeRead ns i
+                MGeneric.unsafeWrite ys0 (i * n_rows + n) x
+                MGeneric.unsafeWrite ns i (n + 1)
 
       for 0 max_cols $ \i -> do
         !n <-
@@ -163,6 +166,7 @@ lengths =
   Stream.inplace (Stream.map Generic.length) id
 {-# INLINE lengths #-}
 
+#if !MIN_VERSION_vector(0,12,2)
 uncons :: Vector v a => v a -> Maybe (a, v a)
 uncons v =
   if Generic.null v then
@@ -170,6 +174,7 @@ uncons v =
   else
     Just (Generic.unsafeHead v, Generic.unsafeTail v)
 {-# INLINE uncons #-}
+#endif
 
 data IdxOff =
   IdxOff !Int !Int
@@ -206,6 +211,7 @@ imapMaybe f =
 {-# INLINE imapMaybe #-}
 #endif
 
+#if !MIN_VERSION_vector(0,12,2)
 mapMaybeM :: Monad m => (Vector v a, Vector v b) => (a -> m (Maybe b)) -> v a -> m (v b)
 mapMaybeM f =
   Stream.inplaceM (Stream.mapMaybeM f) toMax
@@ -215,6 +221,7 @@ imapMaybeM :: Monad m => (Vector v a, Vector v b) => (Int -> a -> m (Maybe b)) -
 imapMaybeM f =
   Stream.inplaceM (Stream.imapMaybeM f) toMax
 {-# INLINE imapMaybeM #-}
+#endif
 
 mapAccumulateM :: (Monad m, Vector v elt, Vector v elt') => (acc -> elt -> m (acc, elt')) -> acc -> v elt -> m (v elt')
 mapAccumulateM f z =
