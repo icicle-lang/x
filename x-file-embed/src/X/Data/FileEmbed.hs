@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE TemplateHaskell #-}
 module X.Data.FileEmbed (
     embedWhen
@@ -32,4 +33,8 @@ pairToExp root (path, bs) = do
   qAddDependentFile $ root <> ('/' : path)
   exp' <- bsToExp bs
   return $!
+#if MIN_VERSION_template_haskell(2,16,0)
+    TupE [Just (LitE $ StringL path), Just exp']
+#else
     TupE [LitE $ StringL path, exp']
+#endif
