@@ -56,7 +56,7 @@ module X.Language.Haskell.TH.Syntax (
 
 import           Data.Char (Char)
 import           Data.Foldable (foldl')
-import           Data.Function ((.))
+import           Data.Function ((.), flip)
 import           Data.Functor (Functor(..))
 #if MIN_VERSION_template_haskell(2,11,0)
 import           Data.Maybe (Maybe(..))
@@ -79,7 +79,11 @@ data_ ::
   -> [Con] -- ^ Constructors
   -> Dec
 data_ n ps cs =
-#if MIN_VERSION_template_haskell(2,11,0)
+#if MIN_VERSION_template_haskell(2,21,0)
+  DataD [] n (fmap (flip TH.PlainTV TH.BndrInvis) ps) Nothing cs []
+#elif MIN_VERSION_template_haskell(2,17,0)
+  DataD [] n (fmap (flip TH.PlainTV ()) ps) Nothing cs []
+#elif MIN_VERSION_template_haskell(2,11,0)
   DataD [] n (fmap TH.PlainTV ps) Nothing cs []
 #else
   DataD [] n (fmap TH.PlainTV ps) cs []

@@ -106,7 +106,7 @@ sepByByteBounded s n =
         let (line, rest) = BS.break (== s) bs
             len' = len + BS.length line in
         if len' > n
-          then lift $ monadThrow (LengthExceeded n)
+          then lift $ throwM (LengthExceeded n)
           else case BS.uncons rest of
             Just (_, rest') ->
               yield (buf `BS.append` line) >> process 0 BS.empty rest'

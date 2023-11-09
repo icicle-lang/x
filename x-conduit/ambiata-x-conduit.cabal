@@ -24,8 +24,8 @@ library
   build-depends:
                        base                            >= 3          && < 5
                      , bytestring                      == 0.10.*
-                     , conduit                         == 1.2.*
-                     , conduit-extra                   == 1.1.*
+                     , conduit                         >= 1.2        && < 1.4
+                     , conduit-extra                   >= 1.2        && < 1.4
                      , mtl                             == 2.2.*
                      , resourcet                       >= 1.1
                      , text                            == 1.2.*

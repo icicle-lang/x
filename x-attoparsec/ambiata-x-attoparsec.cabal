@@ -19,9 +19,9 @@ tested-with:
 
 library
   build-depends:
-                       attoparsec                      >= 0.12       && < 0.14
+                       attoparsec                      >= 0.12       && < 0.15
                      , base                            >= 3          && < 6
-                     , bytestring                      == 0.10.*
+                     , bytestring                      >= 0.10       && < 0.13
                      , ambiata-p
                      , text                            >= 1.1        && < 1.3
 
