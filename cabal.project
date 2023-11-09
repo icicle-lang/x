@@ -18,3 +18,35 @@ packages:
 constraints:
   cabal > 2
 
+package x-optparse
+  tests: True
+
+package x-bytestring
+  tests: True
+
+package x-eithert
+  tests: True
+
+package x-attoparsec
+  tests: True
+
+package x-exception
+  tests: True
+
+package x-conduit
+  tests: True
+
+package x-vector
+  tests: True
+
+package x-templatehaskell
+  tests: True
+
+package x-show
+  tests: True
+
+package x-aeson
+  tests: True
+
+package x-file-embed
+  tests: True

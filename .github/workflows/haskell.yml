@@ -1,0 +1,93 @@
+name: Haskell CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  cabal:
+    name: ${{ matrix.os }} / ghc ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - cabal: "3.8.1"
+            ghc: "8.8.4"
+            os: ubuntu-latest
+          - cabal: "3.8.1"
+            ghc: "9.0.2"
+            os: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - uses: haskell/actions/setup@v2
+      id: setup-haskell-cabal
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - name: Freeze
+      run: |
+        cabal configure
+        cabal freeze
+    - uses: actions/cache@v1
+      name: Cache ~/.cabal/store
+      with:
+        path: ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+
+    - name: Build
+      run: |
+        cabal build all
+
+    - name: Test x-aeson
+      run: |
+        cabal test x-aeson
+
+    - name: Test x-attoparsec
+      run: |
+        cabal test x-attoparsec
+
+    - name: Test x-bytestring
+      run: |
+        cabal test x-bytestring
+
+    - name: Test x-conduit
+      run: |
+        cabal test x-conduit
+
+    - name: Test x-eithert
+      run: |
+        cabal test x-eithert
+
+    - name: Test x-exception
+      run: |
+        cabal test x-exception
+
+    - name: Test x-file-embed
+      run: |
+        cabal test x-file-embed
+
+    - name: Test x-optparse
+      run: |
+        cabal test x-optparse
+
+    - name: Test x-show
+      run: |
+        cabal test x-show
+
+    - name: Test x-templatehaskell
+      run: |
+        cabal test x-templatehaskell
+
+    - name: Test x-vector
+      run: |
+        cabal test x-vector

@@ -3,7 +3,7 @@
 # X
 ### A collection of extra combinator libraries.
 
-[![Build Status](https://api.travis-ci.com/icicle-lang/x.svg?branch=master)](https://travis-ci.com/icicle-lang/x)
+[![Build Status](https://github.com/icicle-lang/x/actions/workflows/haskell.yml/badge.svg)](https://github.com/icicle-lang/x/actions/workflows/haskell.yml)
 
 </div>
 
