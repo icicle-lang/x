@@ -33,6 +33,7 @@ import           Data.Functor ((<$>), fmap)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import qualified Data.HashMap.Strict as H
+import Data.Aeson.Key (fromText)
 import           Data.Maybe (Maybe (..), maybe)
 import           Data.Monoid
 import           Data.Ord (Ord)

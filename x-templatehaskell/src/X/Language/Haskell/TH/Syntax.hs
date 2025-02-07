@@ -41,7 +41,7 @@ module X.Language.Haskell.TH.Syntax (
   , listE
   -- * Patterns
   , varP
-  , conP
+  -- , conP
   -- * Matches
   , match
   , match_
@@ -232,9 +232,9 @@ varP :: Name -> Pat
 varP =
   VarP
 
-conP :: Name -> [Pat] -> Pat
-conP =
-  ConP
+-- conP :: Name -> [Pat] -> Pat
+-- conP =
+--   ConP
 
 -- -----------------------------------------------------------------------------
 -- Matches

@@ -22,8 +22,8 @@ library
                        base                            >= 4.6        && < 6
                      , ambiata-x-exception
                      , exceptions                      >= 0.6        && < 0.11
-                     , text                            == 1.2.*
-                     , transformers                    >= 0.4        && < 0.6
+                     , text                            >= 2.0        && < 2.2
+                     , transformers                    >= 0.4        && < 0.7
 
   ghc-options:
                        -Wall
