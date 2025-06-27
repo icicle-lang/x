@@ -1,6 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE TemplateHaskell     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE CPP                 #-}
 module X.Data.Aeson.TH (
     embedJson
   ) where
@@ -8,7 +9,14 @@ module X.Data.Aeson.TH (
 import           Data.Aeson (Value (..), object, decode)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.HashMap.Strict as HM
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.KeyMap as KeyMap
+import           Data.Aeson.Key (Key)
+import qualified Data.Aeson.Key as Key
+#else
+import qualified Data.HashMap.Lazy as KeyMap
+#endif
+
 import qualified Data.Text as T
 import qualified Data.Vector as V
 
@@ -19,6 +27,16 @@ import qualified Prelude (error)
 import           P
 
 import           System.IO (FilePath)
+
+keyToText :: Key -> Text
+
+#if MIN_VERSION_aeson(2,0,0)
+keyToText = Key.toText
+#else
+keyToText = id
+type Key = Text
+#endif
+
 
 embedJson :: FilePath -> Q Exp
 embedJson fp = do
@@ -40,12 +58,13 @@ toExp (Object objs) =
   [|object $jsList|]
     where
       jsList :: ExpQ
-      jsList = ListE <$> mapM objs2list (HM.toList objs)
+      jsList = ListE <$> mapM objs2list (KeyMap.toList objs)
 
-      objs2list :: (Text, Value) -> ExpQ
+      objs2list :: (Key, Value) -> ExpQ
       objs2list (key, value) =
-        let k = T.unpack key
+        let k = T.unpack (keyToText key)
         in [|(T.pack k, $(toExp value))|]
+
 toExp (Array arr) =
   let arr' = V.toList arr
   in [|Array $ V.fromList $(ListE <$> mapM toExp (arr'))|]
