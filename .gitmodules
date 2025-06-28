@@ -1,6 +1,1 @@
-[submodule "lib/disorder"]
-	path = lib/disorder
-	url = ../disorder
-[submodule "lib/p"]
-	path = lib/p
-	url = ../p.git
+

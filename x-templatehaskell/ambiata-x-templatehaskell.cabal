@@ -20,7 +20,7 @@ tested-with:
 library
   build-depends:
                        base                            >= 3          && < 5
-                     , text                            == 1.2.*
+                     , text                            >= 2.0        && < 2.2
                      , template-haskell                >= 2.8
                      , syb                             >= 0.4        && < 0.8
 

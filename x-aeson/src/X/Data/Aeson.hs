@@ -1,4 +1,5 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module X.Data.Aeson (
@@ -32,7 +33,12 @@ import           Data.Function ((.), ($))
 import           Data.Functor ((<$>), fmap)
 import           Data.Map (Map)
 import qualified Data.Map as M
-import qualified Data.HashMap.Strict as H
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.KeyMap as KeyMap
+import qualified Data.Aeson.Key as Key
+#else
+import qualified Data.HashMap.Lazy as KeyMap
+#endif
 import           Data.Maybe (Maybe (..), maybe)
 import           Data.Monoid
 import           Data.Ord (Ord)
@@ -43,10 +49,15 @@ import           Data.Traversable (for, traverse)
 import qualified Data.Vector as V
 import           Data.ByteString.Lazy (toStrict)
 
+#if MIN_VERSION_aeson(2,0,0)
+#else
+type Key = Text
+#endif
 
-(.=?) :: ToJSON a => Text -> Maybe a -> [(Text, Value)]
+
+(.=?) :: ToJSON a => k -> Maybe a -> [(k, Value)]
 (.=?) k =
-  maybe [] (\x -> [k .= x])
+  maybe [] (\x -> [(k, toJSON x)])
 
 asText :: ToJSON a => a -> Text
 asText =
@@ -68,13 +79,13 @@ asWith to t =
 
 parsePair :: Text -> Text -> Value -> Parser (Text, Text)
 parsePair k v (Object o) =
-  (,) <$> o .: k <*> o .: v
+  (,) <$> o .: Key.fromText k <*> o .: Key.fromText v
 parsePair k v _ =
   fail . T.unpack $ "Invalid pair, expected object with the following keys: " <> T.intercalate ", " [k, v]
 
 printPair :: Text -> Text -> (Text, Text) -> Value
 printPair k v (k', v') =
-  object [ k .= k', v  .= v' ]
+  object [ Key.fromText k .= k', Key.fromText v .= v' ]
 
 valueToObject :: Text -> Value -> Parser Object
 valueToObject t = \case
@@ -96,11 +107,11 @@ valueToObjectList t =
 
 objectFromList :: [(Text, Value)] -> Object
 objectFromList =
-  H.fromList
+  KeyMap.fromMapText . M.fromList
 
 parseEitherFailO :: FromJSON a => (b -> Text) -> (a -> Either b c) -> Text -> Object -> Parser c
 parseEitherFailO e f p o =
-  parseEitherFail e f =<< o .: p
+  parseEitherFail e f =<< o .: Key.fromText p
 
 parseEitherFail :: (b -> Text) -> (a -> Either b c) -> a -> Parser c
 parseEitherFail e f =
@@ -108,7 +119,7 @@ parseEitherFail e f =
 
 parseMaybeFailO :: FromJSON a => Text -> (a -> Maybe b) -> Text -> Object -> Parser b
 parseMaybeFailO e f p o =
-  parseMaybeFail e f =<< o .: p
+  parseMaybeFail e f =<< o .: Key.fromText p
 
 parseMaybeFail :: Text -> (a -> Maybe b) -> a -> Parser b
 parseMaybeFail e f =
@@ -120,7 +131,7 @@ mapToJson k v =
 
 mapFromJson :: Ord k => (Text -> Parser k) -> (Value -> Parser v) -> Object -> Parser (Map k v)
 mapFromJson k v o =
-  fmap M.fromList . for (H.toList o) $ \(k', v') ->
+  fmap M.fromList . for (KeyMap.toList o) $ \(k', v') ->
     (,)
-      <$> k k'
+      <$> k (Key.toText k')
       <*> v v'

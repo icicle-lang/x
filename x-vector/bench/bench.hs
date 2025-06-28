@@ -49,8 +49,8 @@ main =
 config :: Config
 config =
   defaultConfig {
-      reportFile = Just "dist/build/x-vector-bench.html"
-    , csvFile = Just "dist/build/x-vector-bench.csv"
+      reportFile = Just "x-vector-bench.html"
+    , csvFile = Just "x-vector-bench.csv"
     }
 
 transposeBenchmarks :: Int -> [(String, Benchmark)]
