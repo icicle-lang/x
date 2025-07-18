@@ -22,7 +22,7 @@ library
                        base                            >= 3          && < 5
                      , ambiata-p
                      , attoparsec                      >= 0.12       && < 0.15
-                     , optparse-applicative            >= 0.11       && < 0.19
+                     , optparse-applicative            >= 0.11       && < 0.20
                      , text                            >= 2.0        && < 2.2
                      , transformers                    >= 0.4        && < 0.7
 
